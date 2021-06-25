@@ -21,6 +21,7 @@ export const AuthContext = createContext({} as AuthContextType);
 export function AuthContextProvider(props: AuthContextProviderProps) {
 
   const [user, setUser] = useState<User>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
@@ -37,7 +38,10 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
           avatar: photoURL
         })
       }
+      setLoading(false);
     })
+
+    
 
     // Boa prática: sempre que for cadastrado um "event listener" como esse,
     // deve-se criar esse retorno para se descadastrar ele.
@@ -65,6 +69,10 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
         avatar: photoURL
       })
     }
+  }
+
+  if(loading) {
+    return <p>Carregando...</p>
   }
 
   return (

@@ -10,6 +10,7 @@ import googleIconImg from '../assets/images/google-icon.svg'
 import { Button } from '../components/Button'
 import { useAuth } from '../hooks/useAuth'
 import { database } from '../services/firebase'
+import { useTheme } from '../hooks/useTheme'
 
 import '../styles/auth.scss'
 
@@ -20,6 +21,8 @@ export function Home() {
   const history = useHistory();
   const {user, signInWithGoogle} = useAuth()
   const [roomCode, setRoomCode] = useState('')
+
+  const { theme, toggleTheme } = useTheme();
 
   async function handleCreateRoom() {
     if(!user) {
@@ -42,11 +45,16 @@ export function Home() {
       return;
     }
 
+    if(roomRef.val().endedAt) {
+      alert('Room already closed.');
+      return;
+    }
+
     history.push(`/rooms/${roomCode}`);
   }
 
   return (
-    <div id="page-auth">
+    <div id="page-auth" className={theme}>
       <aside>
         <img src={illustrationImg} alt="Ilustração simbolizando perguntas e respostas" />
         <strong>Crie salas de Q&A ao vivo</strong>
@@ -54,6 +62,7 @@ export function Home() {
       </aside>
       <main>
         <div className="main-content">
+          <button onClick={toggleTheme}>Toggle</button>
           <img src={logoImg} alt="Letmeask" />
           <button onClick={handleCreateRoom} className="create-room">
             <img src={googleIconImg} alt="Logo do Google" />
